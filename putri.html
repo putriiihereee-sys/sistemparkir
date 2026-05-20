@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Sederhana</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f4f4;
+      padding: 30px;
+    }
+
+    .container {
+      max-width: 500px;
+      background: white;
+      padding: 20px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    button {
+      background: blue;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    ul {
+      margin-top: 20px;
+    }
+
+    li {
+      background: #eee;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Data Pengguna</h2>
+
+    <input type="text" id="nama" placeholder="Masukkan nama">
+
+    <button onclick="simpanData()">
+      Simpan
+    </button>
+
+    <ul id="listData"></ul>
+  </div>
+
+  <script>
+    const listData = document.getElementById('listData')
+
+    function tampilkanData() {
+      listData.innerHTML = ''
+
+      const data = JSON.parse(localStorage.getItem('users')) || []
+
+      data.forEach((item, index) => {
+        listData.innerHTML += `
+          <li>${index + 1}. ${item}</li>
+        `
+      })
+    }
+
+    function simpanData() {
+      const nama = document.getElementById('nama').value
+
+      if (nama === '') {
+        alert('Nama wajib diisi')
+        return
+      }
+
+      const data = JSON.parse(localStorage.getItem('users')) || []
+
+      data.push(nama)
+
+      localStorage.setItem('users', JSON.stringify(data))
+
+      document.getElementById('nama').value = ''
+
+      tampilkanData()
+    }
+
+    tampilkanData()
+  </script>
+
+</body>
+</html>
