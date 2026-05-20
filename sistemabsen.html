@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sistem Absensi Siswa</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body{
+  background: linear-gradient(to right, #ffe4ec, #fff6f8);
+  padding:40px;
+  font-family:'Poppins', sans-serif;
+}
+
+    .container{
+      max-width:1000px;
+      margin:auto;
+    }
+
+    .card{
+  background:rgba(255,255,255,0.9);
+  padding:30px;
+  border-radius:25px;
+  box-shadow:0 10px 25px rgba(255,182,193,0.3);
+  margin-bottom:30px;
+  border:1px solid #ffd6e0;
+  backdrop-filter:blur(10px);
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+}
+
+    h1{
+  margin-bottom:25px;
+  color:#ff5c8a;
+  text-align:center;
+  font-size:35px;
+  font-weight:700;
+}
+
+    .form-group{
+      margin-bottom:15px;
+    }
+
+    label{
+      display:block;
+      margin-bottom:5px;
+      font-weight:bold;
+      color:#334155;
+    }
+
+    input,
+select{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:15px;
+  background:#fff0f5;
+  font-size:15px;
+  outline:none;
+  transition:0.3s;
+}
+
+input:focus,
+select:focus{
+  background:white;
+  border:2px solid #ff9ebb;
+}
+
+    button{
+  background:linear-gradient(to right, #ff8fab, #ffb3c6);
+  color:white;
+  border:none;
+  padding:14px 20px;
+  border-radius:15px;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:600;
+  transition:0.3s;
+  box-shadow:0 5px 15px rgba(255,143,171,0.4);
+}
+
+    button:hover{
+  transform:scale(1.02);
+  background:linear-gradient(to right, #ff5c8a, #ff8fab);
+}
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+    }
+
+    table th{
+  background:#ff8fab;
+  color:white;
+  padding:15px;
+}
+
+table tr:hover td{
+  background:#fff5f8;
+}
+
+    table td{
+      padding:12px;
+      border-bottom:1px solid #ddd;
+      text-align:center;
+    }
+
+    .hadir{
+      color:green;
+      font-weight:bold;
+    }
+
+    .izin{
+      color:orange;
+      font-weight:bold;
+    }
+
+    .sakit{
+      color:#0ea5e9;
+      font-weight:bold;
+    }
+
+    .alpa{
+      color:red;
+      font-weight:bold;
+    }
+
+    .hapus-btn{
+  background:linear-gradient(to right, #ff758f, #ff8fab);
+  padding:10px 15px;
+  border-radius:10px;
+  border:none;
+  color:white;
+  cursor:pointer;
+}
+
+    .hapus-btn:hover{
+      background:darkred;
+    }
+
+    @media(max-width:768px){
+      body{
+        padding:15px;
+      }
+
+      table{
+        font-size:12px;
+      }
+
+      button{
+        width:100%;
+      }
+    }
+
+    #daftarSiswa{
+  margin-top:15px;
+  padding-left:0;
+}
+
+#daftarSiswa li{
+  background:#fff0f5;
+  margin-bottom:8px;
+  padding:10px;
+  border-radius:10px;
+  list-style:none;
+  border-left:5px solid #ff8fab;
+}
+
+.foto{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid #ff8fab;
+}
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+    <h1>Sistem Absensi Siswa</h1>
+
+    <div class="form-group">
+  <label>Nama Siswa</label>
+  <select id="nama">
+    <option value="Asef">Asef</option>
+    <option value="Chalvin">Chalvin</option>
+    <option value="Putri">Putri</option>
+    <option value="Vinsa">Vinsa</option>
+    <option value="Wahyu">Wahyu</option>
+  </select>
+</div>
+
+    <div class="form-group">
+      <label>Kelas</label>
+      <input type="text" id="kelas" placeholder="Masukkan kelas">
+    </div>
+
+    <div class="form-group">
+      <label>Status Kehadiran</label>
+      <select id="status">
+        <option value="Hadir">Hadir</option>
+        <option value="Izin">Izin</option>
+        <option value="Sakit">Sakit</option>
+        <option value="Alpa">Alpa</option>
+      </select>
+    </div>
+
+    <button onclick="tambahAbsensi()">Simpan Absensi</button>
+
+    <br><br>
+    
+</div>
+
+  <div class="card">
+    <h1>Data Absensi</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Foto</th>
+          <th>Nama</th>
+          <th>Kelas</th>
+          <th>Status</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+
+      <tbody id="tableBody">
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+
+let dataAbsensi = [];
+  function tambahAbsensi(){
+    
+    const daftarSiswa = {
+  "Asef": "putri.jpeg",
+  "Chalvin": "foto/budi.jpg",
+  "Putri": "foto/andi.jpg",
+  "Vinsa": "foto/andi.jpg",
+  "Wahyu": "foto/andi.jpg"
+};
+
+    const nama = document.getElementById("nama").value;
+    const kelas = document.getElementById("kelas").value;
+    let foto = daftarSiswa[nama];
+
+if(!foto){
+  foto = "foto/default.jpg"; // kalau nama tidak ada
+}
+
+    const status = document.getElementById("status").value;
+    
+    if(nama === "" || kelas === ""){
+      alert("Semua data wajib diisi!");
+      return;
+    }
+
+    const data = {
+      nama,
+      kelas,
+      status,
+      foto
+    };
+
+    dataAbsensi.push(data);
+
+    tampilkanData();
+
+    resetForm();
+  }
+
+  function tampilkanData(){
+
+    const tableBody = document.getElementById("tableBody");
+
+    tableBody.innerHTML = "";
+
+    dataAbsensi.forEach((item, index) => {
+
+      let statusClass = "";
+
+      if(item.status === "Hadir"){
+        statusClass = "hadir";
+      } else if(item.status === "Izin"){
+        statusClass = "izin";
+      } else if(item.status === "Sakit"){
+        statusClass = "sakit";
+      } else {
+        statusClass = "alpa";
+      }
+
+      tableBody.innerHTML += `
+        <tr>
+          <td>
+          <img src="${item.foto}" class="foto">
+          </td>
+          <td>${item.nama}</td>
+          <td>${item.kelas}</td>
+          <td class="${statusClass}">
+            ${item.status}
+          </td>
+          <td>
+            <button class="hapus-btn" onclick="hapusData(${index})">
+              Hapus
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  function hapusData(index){
+
+    if(confirm("Yakin ingin menghapus data ini?")){
+      dataAbsensi.splice(index, 1);
+      tampilkanData();
+    }
+  }
+
+  function resetForm(){
+    document.getElementById("nama").selected = "";
+    document.getElementById("kelas").value = "";
+    document.getElementById("status").value = "Hadir";
+  }
+
+tampilkanData();
+</script>
+
+</body>
+</html>
