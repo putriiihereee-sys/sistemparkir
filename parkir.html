@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Parkir</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins', sans-serif;
+    }
+
+    body{
+      background:linear-gradient(to right,#dbeafe,#eff6ff);
+      padding:40px;
+      color:#1e293b;
+    }
+
+    .container{
+      max-width:1100px;
+      margin:auto;
+    }
+
+    .card{
+      background:white;
+      padding:30px;
+      border-radius:25px;
+      box-shadow:0 10px 25px rgba(0,0,0,0.1);
+      margin-bottom:30px;
+    }
+
+    h1{
+      text-align:center;
+      margin-bottom:25px;
+      color:#2563eb;
+      font-size:36px;
+    }
+
+    .form-group{
+      margin-bottom:20px;
+    }
+
+    label{
+      display:block;
+      margin-bottom:8px;
+      font-weight:600;
+    }
+
+    input,
+    select{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:15px;
+      background:#f1f5f9;
+      font-size:15px;
+      outline:none;
+    }
+
+    input:focus,
+    select:focus{
+      border:2px solid #60a5fa;
+      background:white;
+    }
+
+    button{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:15px;
+      background:linear-gradient(to right,#3b82f6,#60a5fa);
+      color:white;
+      font-size:16px;
+      font-weight:600;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    button:hover{
+      transform:scale(1.02);
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+    }
+
+    table th{
+      background:#3b82f6;
+      color:white;
+      padding:15px;
+    }
+
+    table td{
+      padding:14px;
+      text-align:center;
+      border-bottom:1px solid #ddd;
+    }
+
+    table tr:hover td{
+      background:#eff6ff;
+    }
+
+    .hapus-btn{
+      background:#ef4444;
+      padding:10px 15px;
+      border:none;
+      border-radius:10px;
+      color:white;
+      cursor:pointer;
+      width:auto;
+    }
+
+    .hapus-btn:hover{
+      background:#dc2626;
+    }
+
+    .mobil{
+      color:#2563eb;
+      font-weight:bold;
+    }
+
+    .motor{
+      color:#16a34a;
+      font-weight:bold;
+    }
+
+    @media(max-width:768px){
+
+      body{
+        padding:15px;
+      }
+
+      table{
+        font-size:12px;
+      }
+
+      h1{
+        font-size:28px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <h1>Sistem Parkir</h1>
+
+    <div class="form-group">
+      <label>Nama Kendaraan</label>
+      <input type="text" id="nama" placeholder="Masukkan nama kendaraan">
+    </div>
+
+    <div class="form-group">
+      <label>Nomor Plat</label>
+      <input type="text" id="plat" placeholder="Contoh: B 1234 ABC">
+    </div>
+
+    <div class="form-group">
+      <label>Jenis Kendaraan</label>
+
+      <select id="jenis">
+        <option value="Mobil">Mobil</option>
+        <option value="Motor">Motor</option>
+      </select>
+    </div>
+
+    <button onclick="tambahParkir()">
+      Tambah Kendaraan
+    </button>
+
+  </div>
+
+  <div class="card">
+
+    <h1>Data Parkir</h1>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama Kendaraan</th>
+          <th>Plat Nomor</th>
+          <th>Jenis</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+
+      <tbody id="tableBody">
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<script>
+
+  let dataParkir = [];
+
+  function tambahParkir(){
+
+    const nama = document.getElementById("nama").value;
+    const plat = document.getElementById("plat").value;
+    const jenis = document.getElementById("jenis").value;
+
+    if(nama === "" || plat === ""){
+      alert("Data wajib diisi!");
+      return;
+    }
+
+    const data = {
+      nama,
+      plat,
+      jenis
+    };
+
+    dataParkir.push(data);
+
+    tampilkanData();
+
+    resetForm();
+  }
+
+  function tampilkanData(){
+
+    const tableBody = document.getElementById("tableBody");
+
+    tableBody.innerHTML = "";
+
+    dataParkir.forEach((item, index) => {
+
+      let jenisClass = "";
+
+      if(item.jenis === "Mobil"){
+        jenisClass = "mobil";
+      } else {
+        jenisClass = "motor";
+      }
+
+      tableBody.innerHTML += `
+      
+      <tr>
+        <td>${index + 1}</td>
+        <td>${item.nama}</td>
+        <td>${item.plat}</td>
+
+        <td class="${jenisClass}">
+          ${item.jenis}
+        </td>
+
+        <td>
+          <button class="hapus-btn"
+          onclick="hapusData(${index})">
+          Hapus
+          </button>
+        </td>
+
+      </tr>
+
+      `;
+    });
+
+  }
+
+  function hapusData(index){
+
+    if(confirm("Yakin ingin menghapus data?")){
+
+      dataParkir.splice(index,1);
+
+      tampilkanData();
+
+    }
+
+  }
+
+  function resetForm(){
+
+    document.getElementById("nama").value = "";
+    document.getElementById("plat").value = "";
+    document.getElementById("jenis").value = "Mobil";
+
+  }
+
+</script>
+
+</body>
+</html>
